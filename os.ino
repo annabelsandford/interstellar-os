@@ -1,24 +1,29 @@
 #include <EEPROM.h>
 
-// Operating System
+// Interstellar Operating System
 // Written by Annabel Sandford
 
 // Declarations
 uint8_t eead = 130; // EEPROM Address we write to
-int v, usronce, knwonce; // Declare int for line and UI optimization
+int v, u, usronce, knwonce; // Declare int for line and UI optimization
 int usrnm_limit = 4; // Declare username char limit (4)
 int usrnm_set = 0; // Whether a custom username had been set or not (later replaced by EEPROM value)
 // No I cannot check whether the username is empty or not because strings spit out a value of infinite question marks
 // making it impossible to check for an empty username. Thus a value of 1 is set when one exists & 0 if not.
 
 String readSerial, readUsername, readNew, usrnm;
-String br = "="; // Line characters (only UI)
+String sysname = "Interstellar OS"; // Name of this system
+String sysver = "0.0.1"; // Version number
+String br = "-"; // Line characters (only UI)
 String del = "userdelete"; // sys-code: Delete the username
 String inf = "info"; // sys-code: info
 String hi = "hi"; // sys-code: greeting
 String help = "help"; // sys-code: help
+String echo = "echo"; // sys-code: echo
+String cls_str = "cls"; // sys-code: Call cls(); function to clear screen
 
 // Functions
+
 int nwln() { // New Line
   Serial.println();
 }
@@ -41,6 +46,31 @@ void ln() { // Create line for UI
     v++;
   }
   nwln();
+}
+
+void cls() { // Create 100 linebreaks to clear monitor
+  u = 0;
+  while (u < 100)
+  {
+    nwln();
+    u++;
+  }
+}
+
+void boot() { // Literally what it says
+Serial.println("     ____      __                 __       ____ ");
+Serial.println("    /  _/___  / /____  __________/ /____  / / /___ ______");
+Serial.println("    / // __ \\/ __/ _ \\/ ___/ ___/ __/ _ \\/ / / __ `/ ___/");
+Serial.println("  _/ // / / / /_/  __/ /  (__  ) /_/  __/ / / /_/ / /    ");
+Serial.println(" /___/_/ /_/\\__/\\___/_/  /____/\\__/\\___/_/_/\\__,_/_/  ");
+nwln();  // How can 5 println's take up 20% of the dynamic memory????? what??? this needs adjustment 
+ln();
+Serial.print("System Name : ");
+Serial.print(sysname);
+nwln();
+Serial.print("System Version : ");
+Serial.print(sysver);
+nwln(); // Now 23%??? HOW???                                                                                                                                                
 }
 
 void writeStringToEEPROM(int addrOffset, const String &strToWrite) // Writes username string to EEPROM
@@ -71,12 +101,14 @@ int help_func() {
   Serial.println(inf);
   Serial.println(hi);
   Serial.println(help);
+  Serial.println(cls);
+  Serial.println(echo);
   ln();
  }
 
 int inf_func() {
   ret_input();
-  Serial.println("OS Information:");
+  boot();
   nwln();
   Serial.print("User: ");
   Serial.print(usrnm);
@@ -96,6 +128,19 @@ int hi_func() {
   ln();
 }
 
+int echo_func() {
+  ret_input();
+  Serial.print("Hey, ");
+  Serial.print(usrnm);
+  Serial.print("!");
+  nwln();
+  ln();
+}
+
+int amogus_func() {
+  ret_input();
+}
+
 // Actual software starts here
 
 void setup() {
@@ -103,8 +148,12 @@ void setup() {
   usronce = 0;
   knwonce = 0;
   Serial.begin(9600);
+  cls();
   Serial.println("CHIPSET INITIALIZED"); // so I can keep track of what is loaded
   ln();
+  delay(2500);
+  cls();
+  boot();
 }
 
 void loop() {
@@ -195,6 +244,9 @@ void loop() {
       loop();
     } else if (readNew.equals(help)) {
       help_func();
+      res();
+    } else if (readNew.equals(cls_str)) {
+      cls();
       res();
     } else if (readNew.equals(hi)) {
       hi_func();
