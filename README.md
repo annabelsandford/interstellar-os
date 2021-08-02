@@ -21,16 +21,23 @@ _Change the username character limit (Normally set to 4 to not interfere with ot
 ```c
 int usrnm_limit = 4;
 ```
+_If you happen to make your own version of Interstellar OS (Please don't forget to credit) you can change the System Version (sysver) / System Name (sysname) value here. It's being used in the boot(); and info_func(); functions._
+```c
+String sysname = "Interstellar OS";
+String sysver = "0.0.1";
+```
 _Change the string value to whatever character you want Interstellar to use as a line break_
 ```c
-String br = "=";
+String br = "-";
 ```
-_Those are system checks strings. Editing those is not recommended as system functions would not be able to be called._
+_Those are system check strings. Editing those is not recommended as system functions would not be able to be called._
 ```c
 String del = "userdelete";
 String inf = "info";
 String hi = "hi";
 String help = "help";
+String echo = "echo";
+String cls_str = "cls";
 ```
 
 ## Contributing
